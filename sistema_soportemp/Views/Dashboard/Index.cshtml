@@ -1,0 +1,296 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+<style>
+    .chart-container {
+        position: relative;
+        height: 300px;
+        width: 100%;
+    }
+</style>
+<h2>Dashboard</h2>
+
+<!-- Filtros de Fecha y Técnico -->
+<form method="get">
+    <div class="row">
+        <div class="col-md-4">
+            <label for="startDate">Fecha de inicio:</label>
+            <input type="date" id="startDate" name="startDate" class="form-control" value="@Model.StartDate?.ToString("yyyy-MM-dd")" />
+        </div>
+        <div class="col-md-4">
+            <label for="endDate">Fecha de fin:</label>
+            <input type="date" id="endDate" name="endDate" class="form-control" value="@Model.EndDate?.ToString("yyyy-MM-dd")" />
+        </div>
+        <div class="col-md-4">
+            <label for="tecnicoId">Técnico:</label>
+            <select id="tecnicoId" name="tecnicoId" class="form-control">
+                <option value="">Seleccione Técnico</option>
+                @foreach (var tecnico in Model.Tecnicos)
+                {
+                    <option value="@tecnico.Id" >@tecnico.Nombre</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+    </div>
+</form>
+
+<hr />
+
+<!-- Resumen de estadísticas -->
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h5>Total Equipos Reparados</h5>
+                <p>@Model.TotalEquiposReparados</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h5>Total Equipos en Espera Rep.</h5>
+                <p>@Model.TotalEquiposEnEspera</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h5>Total Equipos Entregados</h5>
+                <p>@Model.TotalEquiposEntregados</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h5>Total Equipos</h5>
+                <p>@Model.TotalEquipos</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr />
+
+
+<!-- Gráficos -->
+<div class="row mt-4">
+    <div class="col-md-6">
+        <h4>Distribución de Equipos</h4>
+        <div class="chart-container">
+            <canvas id="pieChart"></canvas>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <h4>Gráfico de Reparaciones por Mes</h4>
+        <div class="chart-container">
+            <canvas id="reparacionesChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Nueva gráfica de reparaciones por trabajador -->
+<div class="row mt-4">
+    <div class="col-md-6">
+        <h4>Reparaciones por Trabajador</h4>
+        <div class="chart-container">
+            <canvas id="reparacionesPorTrabajadorChart"></canvas>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <h4>Reparaciones por Ubicación</h4>
+        <div class="chart-container">
+            <canvas id="reparacionesPorUbicacionChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    // Configuración del gráfico de pastel
+    var ctxPie = document.getElementById('pieChart').getContext('2d');
+    var pieChart = new Chart(ctxPie, {
+        type: 'pie',
+        data: {
+            labels: @Html.Raw(Json.Serialize(Model.ChartData.Labels)),
+            datasets: [{
+                data: @Html.Raw(Json.Serialize(Model.ChartData.Values)),
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'],
+                hoverBackgroundColor: ['#FF4560', '#5099FF', '#FFDF70', '#55D5D5']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return tooltipItem.label + ': ' + tooltipItem.raw;
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Configuración del gráfico de barras
+    var ctxBar = document.getElementById('reparacionesChart').getContext('2d');
+    var barChart = new Chart(ctxBar, {
+        type: 'bar',
+        data: {
+            labels: @Html.Raw(Json.Serialize((ViewData["Meses"] as string).Split(','))),
+            datasets: [{
+                label: 'Reparaciones Realizadas',
+                data: @Html.Raw(Json.Serialize((ViewData["TotalReparaciones"] as string).Split(',').Select(int.Parse).ToList())),
+                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false,
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return 'Reparaciones: ' + tooltipItem.raw;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Número de Reparaciones'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Mes'
+                    }
+                }
+            }
+        }
+    });
+
+    // Configuración del gráfico de reparaciones por trabajador
+    var ctxWorker = document.getElementById('reparacionesPorTrabajadorChart').getContext('2d');
+    var workerChart = new Chart(ctxWorker, {
+        type: 'bar',
+        data: {
+            labels: @Html.Raw(Json.Serialize((ViewData["NombresTrabajadores"] as string).Split(','))),
+            datasets: [{
+                label: 'Reparaciones por Trabajador',
+                data: @Html.Raw(Json.Serialize((ViewData["ReparacionesPorTrabajador"] as string).Split(',').Select(int.Parse).ToList())),
+                backgroundColor: 'rgba(153, 102, 255, 0.6)',
+                borderColor: 'rgba(153, 102, 255, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false,
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return 'Reparaciones: ' + tooltipItem.raw;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Número de Reparaciones'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Trabajador'
+                    }
+                }
+            }
+        }
+    });
+
+    // Configuración del gráfico de reparaciones por ubicación
+    var ctxLocation = document.getElementById('reparacionesPorUbicacionChart').getContext('2d');
+    var locationChart = new Chart(ctxLocation, {
+        type: 'bar',
+        data: {
+            labels: @Html.Raw(Json.Serialize((ViewData["Ubicaciones"] as string).Split(','))),
+            datasets: [{
+                label: 'Reparaciones por Ubicación',
+                data: @Html.Raw(Json.Serialize((ViewData["ReparacionesPorUbicacion"] as string).Split(',').Select(int.Parse).ToList())),
+                backgroundColor: 'rgba(255, 159, 64, 0.6)',
+                borderColor: 'rgba(255, 159, 64, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false,
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return 'Reparaciones: ' + tooltipItem.raw;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Número de Reparaciones'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Ubicación'
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+
+

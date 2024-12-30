@@ -1,0 +1,48 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model IEnumerable<sistema_soportemp.Models.ReparacionEquipos> 
+
+@{
+    ViewData["Title"] = "Reporte Equipos Reparados";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<table class="table">
+    <a class="btn btn-success" href="@Url.Action("ExportarReparacionEquiposExcel", "Reportes")">Exportar a Excel</a>
+    <a class="btn btn-danger" href="@Url.Action("ExportarReparacionEquiposPdf", "Reportes")">Exportar a PDF</a>
+
+
+    <thead>
+        <tr>
+            <th>Código</th>
+            <th>Marca</th>
+            <th>Modelo</th>
+            <th>Ubicación</th>
+            <th>Activo</th>
+            <th>Trabajador</th>
+            <th>Trabajo Realizado</th>           
+            <th>Fecha</th>
+            <th>Entregado</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Activo.Nombre</td>
+                <td>@item.Marca.Nombre</td>
+                <td>@item.Modelo.Nombre</td>
+                <td>@item.Ubicacion.Nombre</td>
+                <td>@item.Activo.Nombre</td>
+                <td>@item.Trabajador.Nombre</td>
+                <td>@item.TrabajoRealizado</td>
+                <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
+                <td>@(item.Entregado ? "Sí" : "No")</td>
+            </tr>
+        }
+    </tbody>
+</table>

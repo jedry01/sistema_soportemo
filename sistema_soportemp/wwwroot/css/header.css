@@ -1,0 +1,71 @@
+﻿body {
+}
+/* Contenedor principal de los controles */
+.header-controls {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    z-index: 1000;
+    pointer-events: auto; /* Permite la interacción */
+}
+
+/* Contenedor del usuario */
+.user-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Información del usuario */
+.user-info {
+    display: flex;
+    flex-direction: row; /* Alineación en fila */
+    align-items: center; /* Centrado vertical */
+    gap: 0.5rem; /* Espaciado entre el círculo y el nombre */
+    background-color: #ffffff; /* Fondo blanco por defecto */
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    pointer-events: auto;
+}
+
+/* Cambiar el fondo y el color de texto para el tema oscuro */
+body.dark-theme .user-info {
+    background-color: #2d2d2d; /* Fondo oscuro en el tema oscuro */
+    color: #ffffff; /* Texto blanco */
+}
+
+/* Círculo con inicial del usuario */
+.user-initial-circle {
+    width: 2.25rem;
+    height: 2.25rem;
+    background-color: #007bff;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+/* Cambiar el color del círculo en el tema oscuro */
+body.dark-theme .user-initial-circle {
+    background-color: #ffffff; /* Círculo blanco */
+    color: #2d2d2d; /* Color de texto oscuro */
+}
+
+/* Nombre de usuario */
+.user-name {
+    display: block;
+    text-align: left; /* Alineación del texto */
+    color: #000000; /* Texto negro por defecto */
+}
+
+/* Cambiar el color del nombre de usuario en el tema oscuro */
+body.dark-theme .user-name {
+    color: #ffffff; /* Texto blanco en tema oscuro */
+}

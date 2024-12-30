@@ -1,0 +1,75 @@
+﻿body.dark-theme {
+    background-color: #343a40;
+    color: #ffffff;
+}
+
+body {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+    /* Sidebar en tema oscuro */
+    body.dark-theme .navbar,
+    body.dark-theme .header,
+    body.dark-theme .footer,
+    body.dark-theme .card,
+    body.dark-theme .container {
+        background-color: #343a40;
+    }
+
+/* Otros estilos pueden ir aquí */
+
+/* Botón de cambio de tema */
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0.5rem; /* Añadir padding para mejorar el espacio */
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: #333;
+}
+
+.dark-theme .theme-toggle {
+    background-color: transparent;
+    color: #ffffff;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.theme-toggle-content {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* Espacio entre el icono y la etiqueta */
+}
+
+/* Icono del botón */
+#toggleIcon {
+    font-size: 1.5rem; /* Ajustar el tamaño del icono */
+    color: #333;
+}
+
+.dark-theme #toggleIcon {
+    color: #ffffff;
+}
+
+.dark-theme #themeLabel {
+    color: #fff;
+}
+#themeLabel {
+    font-size: 1rem; /* Reducir el tamaño de la fuente para la etiqueta */
+}
+
+#toggleIcon {
+    font-size: 1.2rem; /* Ajustar el tamaño del icono */
+    color: #333;
+}
+body.dark-theme .btn {
+    background-color: #1C1C1C; /* Color gris carbón para botones */
+    color: #ffffff;
+}

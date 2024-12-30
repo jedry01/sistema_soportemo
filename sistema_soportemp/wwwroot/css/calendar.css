@@ -1,0 +1,35 @@
+﻿body {
+
+}
+.calendar-container {
+    max-width: 900px;
+    /*max-height: 100px;*/
+    margin: 20px auto;
+    padding: 0 15px;
+}
+
+#calendar {
+    font-size: 14px;
+}
+
+ Reduce el tamaño de los botones de la barra de herramientas 
+.fc .fc-button {
+    padding: 0.2em 0.4em;
+    font-size: 0.9em;
+}
+
+ Reduce el espacio en las celdas del calendario 
+.fc td, .fc th {
+    padding: 1px !important;
+}
+
+ Ajusta el tamaño del título del mes 
+.fc .fc-toolbar-title {
+    font-size: 1.5em;
+}
+
+ Estilo para actividades completadas 
+.completed-activity {
+    opacity: 0.7;
+    text-decoration: line-through;
+}
